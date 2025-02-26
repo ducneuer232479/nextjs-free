@@ -14,13 +14,16 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { RegisterBody, RegisterBodyType } from '@/schemaValidations/auth.schema'
-import authApiRequest from '@/apiRequests/api'
+import authApiRequest from '@/apiRequests/auth'
 import { useToast } from '@/components/ui/use-toast'
 import { useRouter } from 'next/navigation'
+import { handleErrorApi } from '@/lib/utils'
+import { useState } from 'react'
 
 const RegisterForm = () => {
   const { toast } = useToast()
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   const form = useForm<RegisterBodyType>({
     resolver: zodResolver(RegisterBody),
@@ -33,6 +36,8 @@ const RegisterForm = () => {
   })
 
   const onSubmit = async (values: RegisterBodyType) => {
+    if (loading) return
+    setLoading(true)
     try {
       const result = await authApiRequest.register(values)
       toast({
@@ -42,26 +47,12 @@ const RegisterForm = () => {
       await authApiRequest.auth({ sessionToken: result.payload.data.token })
       router.push('/me')
     } catch (error: any) {
-      const errors = error.payload.errors as {
-        field: string
-        message: string
-      }[]
-      const status = error.status as number
-
-      if (status === 422) {
-        errors.forEach((error) => {
-          form.setError(error.field as 'email' | 'password', {
-            type: 'server',
-            message: error.message
-          })
-        })
-      } else {
-        toast({
-          title: 'Lỗi',
-          description: error.payload.message,
-          variant: 'destructive'
-        })
-      }
+      handleErrorApi({
+        error,
+        setError: form.setError
+      })
+    } finally {
+      setLoading(false)
     }
   }
 
