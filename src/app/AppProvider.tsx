@@ -16,7 +16,7 @@ const AppProvider = ({
       clientSessionToken.value = initialSessionToken
     }
   })
-  return children
+  return <>{children}</>
 }
 
 export default AppProvider
