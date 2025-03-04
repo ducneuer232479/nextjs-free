@@ -11,9 +11,6 @@ const Logout = () => {
   const searchParams = useSearchParams()
   const sessionToken = searchParams.get('sessionToken')
 
-  console.log('client logout', clientSessionToken.value)
-  console.log('sessionToken ', sessionToken)
-
   useEffect(() => {
     const controller = new AbortController()
     const signal = controller.signal
@@ -29,7 +26,7 @@ const Logout = () => {
     return () => {
       controller.abort()
     }
-  }, [sessionToken, router, pathname])
+  }, [pathname, router, sessionToken])
 
   return <div>page</div>
 }

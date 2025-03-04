@@ -9,8 +9,6 @@ const MeProfile = async () => {
 
   const result = await accountApiRequest.me(sessionToken?.value ?? '')
 
-  console.log('me profile', result)
-
   return (
     <div>
       <h1>Me Profile</h1>
