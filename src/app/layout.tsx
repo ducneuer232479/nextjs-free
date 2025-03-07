@@ -9,6 +9,7 @@ import { cookies } from 'next/headers'
 import SlideSession from '@/components/slide-session'
 import accountApiRequest from '@/apiRequests/account'
 import { AccountResType } from '@/schemaValidations/account.schema'
+import { baseOpenGraph } from '@/app/shared-metadata'
 
 const inter = Inter({ subsets: ['vietnamese'] })
 
@@ -32,7 +33,8 @@ export const metadata: Metadata = {
     template: '%s | Productic',
     default: 'Productic'
   },
-  description: 'Được tạo bởi Đức dev'
+  description: 'Được tạo bởi Đức dev',
+  openGraph: baseOpenGraph
 }
 
 export default async function RootLayout({

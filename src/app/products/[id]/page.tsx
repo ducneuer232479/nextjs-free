@@ -2,6 +2,8 @@ import React, { cache } from 'react'
 import productApiRequest from '@/apiRequests/product'
 import Image from 'next/image'
 import { Metadata, ResolvingMetadata } from 'next'
+import envConfig from '@/config'
+import { baseOpenGraph } from '@/app/shared-metadata'
 
 type Props = {
   params: { id: string }
@@ -16,10 +18,26 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { payload } = await getDetail(Number(params.id))
   const product = payload.data
+  const url = envConfig.NEXT_PUBLIC_URL + '/products/' + product.id
 
   return {
     title: product.name,
-    description: product.description
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      url,
+
+      images: [
+        {
+          url: product.image
+        }
+      ],
+      ...baseOpenGraph
+    },
+    alternates: {
+      canonical: url
+    }
   }
 }
 
