@@ -21,6 +21,8 @@ const ButtonLogout = () => {
       authApiRequest
         .logoutFromNextClientToNextServer(true)
         .then((res) => router.push(`/login?redirectFrom=${pathname}`))
+    } finally {
+      router.refresh()
     }
   }
 
