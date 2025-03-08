@@ -23,6 +23,8 @@ const ButtonLogout = () => {
         .then((res) => router.push(`/login?redirectFrom=${pathname}`))
     } finally {
       router.refresh()
+      localStorage.removeItem('sessionToken')
+      localStorage.removeItem('sessionTokenExpiresAt')
     }
   }
 

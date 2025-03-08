@@ -11,6 +11,9 @@ const Header = async ({ user }: { user: AccountResType['data'] | null }) => {
         <li>
           <Link href='/products'>Sản phẩm</Link>
         </li>
+        <li>
+          <ButtonLogout />
+        </li>
         {user ? (
           <>
             <li>
