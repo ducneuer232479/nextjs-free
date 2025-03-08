@@ -2,12 +2,15 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import Header from '@/components/header'
+
 import { Toaster } from '@/components/ui/toaster'
 import AppProvider from '@/app/app-provider'
 import SlideSession from '@/components/slide-session'
-import { AccountResType } from '@/schemaValidations/account.schema'
 import { baseOpenGraph } from '@/app/shared-metadata'
+import Header from '@/components/header'
+// import dynamic from 'next/dynamic'
+
+// const Header = dynamic(() => import('@/components/header'), { ssr: false })
 
 const inter = Inter({ subsets: ['vietnamese'] })
 
@@ -40,8 +43,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  let user: AccountResType['data'] | null = null
-
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={`${inter.className}`}>
@@ -52,8 +53,8 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AppProvider user={user}>
-            <Header user={user} />
+          <AppProvider>
+            <Header />
             {children}
             <SlideSession />
           </AppProvider>

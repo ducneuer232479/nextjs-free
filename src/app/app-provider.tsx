@@ -1,16 +1,25 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
 import { AccountResType } from '@/schemaValidations/account.schema'
+import { isClient } from '@/lib/http'
 
 type User = AccountResType['data']
 
 const AppContext = createContext<{
   user: User | null
   setUser: (user: User | null) => void
+  isAuthenticated: boolean
 }>({
   user: null,
-  setUser: () => {}
+  setUser: () => {},
+  isAuthenticated: false
 })
 
 export const useAppContext = () => {
@@ -23,17 +32,28 @@ export const useAppContext = () => {
   return context
 }
 
-const AppProvider = ({
-  children,
-  user: userProp
-}: {
-  children: React.ReactNode
-  user: User | null
-}) => {
-  const [user, setUser] = useState<User | null>(userProp)
+const AppProvider = ({ children }: { children: React.ReactNode }) => {
+  // const [user, setUserState] = useState<User | null>(() => {
+  //   if (isClient()) {
+  //     const _user = localStorage.getItem('user')
+  //     return _user ? JSON.parse(_user) : null
+  //   }
+  // })
+  const [user, setUserState] = useState<User | null>(null)
+  const isAuthenticated = Boolean(user)
+
+  const setUser = useCallback((user: User | null) => {
+    setUserState(user)
+    localStorage.setItem('user', JSON.stringify(user))
+  }, [])
+
+  useEffect(() => {
+    const _user = localStorage.getItem('user')
+    setUserState(_user ? JSON.parse(_user) : null)
+  }, [])
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider value={{ user, setUser, isAuthenticated }}>
       {children}
     </AppContext.Provider>
   )

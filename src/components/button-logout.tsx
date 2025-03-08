@@ -1,6 +1,7 @@
 'use client'
 
 import authApiRequest from '@/apiRequests/auth'
+import { useAppContext } from '@/app/app-provider'
 import { Button } from '@/components/ui/button'
 import { handleErrorApi } from '@/lib/utils'
 import { usePathname, useRouter } from 'next/navigation'
@@ -9,6 +10,7 @@ import React from 'react'
 const ButtonLogout = () => {
   const router = useRouter()
   const pathname = usePathname()
+  const { setUser } = useAppContext()
 
   const handleLogout = async () => {
     try {
@@ -22,6 +24,7 @@ const ButtonLogout = () => {
         .logoutFromNextClientToNextServer(true)
         .then((res) => router.push(`/login?redirectFrom=${pathname}`))
     } finally {
+      setUser(null)
       router.refresh()
       localStorage.removeItem('sessionToken')
       localStorage.removeItem('sessionTokenExpiresAt')
